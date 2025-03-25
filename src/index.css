@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -34,13 +35,13 @@
 
     --radius: 1rem;
     
-    /* Timer color variables */
+    /* Timer color variables with increased saturation for better visibility */
     --blue: 221 83% 53%;
-    --green: 142 71% 45%;
-    --purple: 269 80% 64%;
-    --pink: 330 81% 60%;
-    --amber: 38 92% 50%;
-    --teal: 172 66% 50%;
+    --green: 142 76% 45%;
+    --purple: 269 83% 65%;
+    --pink: 330 84% 60%;
+    --amber: 38 95% 55%;
+    --teal: 172 70% 50%;
   }
 
   .dark {
@@ -111,11 +112,13 @@
 .timer-card-transition {
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), 
               opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              background 0.3s ease;
 }
 
 .timer-card-transition:hover {
   transform: translateY(-3px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
 
 .timer-button-transition {

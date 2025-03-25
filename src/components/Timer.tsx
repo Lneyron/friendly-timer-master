@@ -62,13 +62,20 @@ const Timer = ({
     }
   };
 
+  // Get CSS variable name for the timer color
+  const timerColorVar = `--${timer.color || 'blue'}`;
+  const borderColorStyle = timer.status === "running" ? 
+    { borderColor: `hsl(var(${timerColorVar}))`, borderWidth: '2px' } : 
+    {};
+
   return (
     <div
       className={`timer-card-transition glass rounded-2xl p-6 ${
-        timer.status === "running" ? `border-${timer.color || 'primary'}/20` : ""
+        timer.status === "running" ? `shadow-md` : ""
       }`}
       style={{
-        borderColor: timer.status === "running" ? `var(--${timer.color || 'primary'})` : undefined,
+        ...borderColorStyle,
+        background: `linear-gradient(to right, hsla(var(${timerColorVar}), 0.05), transparent)`,
         opacity: 1
       }}
     >
@@ -87,6 +94,10 @@ const Timer = ({
           </div>
         ) : (
           <div className="flex items-center gap-2">
+            <div 
+              className={`w-3 h-3 rounded-full ${bgClass}`} 
+              aria-hidden="true"
+            ></div>
             <h3 className="text-lg font-medium">{timer.name}</h3>
             <button
               onClick={() => setIsEditing(true)}
@@ -108,7 +119,7 @@ const Timer = ({
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
               timer.status === "running"
-                ? `bg-${timer.color || 'green'}-100 text-${timer.color || 'green'}-800 animate-pulse-light`
+                ? `${bgClass} text-white animate-pulse-light`
                 : timer.status === "paused"
                 ? "bg-yellow-100 text-yellow-800"
                 : "bg-gray-100 text-gray-800"
