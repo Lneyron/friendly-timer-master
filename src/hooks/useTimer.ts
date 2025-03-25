@@ -9,6 +9,7 @@ export interface Timer {
   timeElapsed: number; // in milliseconds
   status: TimerStatus;
   createdAt: number; // timestamp
+  lastUpdated?: number; // timestamp of last update, optional
 }
 
 export const useTimer = (initialData?: Partial<Timer>) => {

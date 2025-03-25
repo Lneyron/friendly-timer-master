@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Play, Pause, Stop, Trash2, Edit } from "lucide-react";
+import { Play, Pause, Square, Trash2, Edit } from "lucide-react";
 import { Timer as TimerType, formatTime } from "@/hooks/useTimer";
 
 interface TimerProps {
@@ -119,7 +118,7 @@ const Timer = ({
           className="timer-button-transition flex items-center justify-center p-3 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground"
           aria-label="Stop timer"
         >
-          <Stop size={20} />
+          <Square size={20} />
         </button>
 
         <button
