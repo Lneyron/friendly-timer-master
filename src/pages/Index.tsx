@@ -46,7 +46,7 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleCreateTimer = (name: string) => {
+  const handleCreateTimer = (name: string, color?: string) => {
     const newTimer: TimerType = {
       id: crypto.randomUUID(),
       name,
@@ -54,6 +54,7 @@ const Index = () => {
       status: 'stopped',
       createdAt: Date.now(),
       lastUpdated: Date.now(),
+      color: color || 'blue',
     };
     
     setTimers(prev => [newTimer, ...prev]);
@@ -109,6 +110,17 @@ const Index = () => {
     );
   };
 
+  const handleChangeTimerColor = (id: string, color: string) => {
+    setTimers(prev =>
+      prev.map(timer => (timer.id === id ? { ...timer, color } : timer))
+    );
+    
+    toast({
+      title: "Timer updated",
+      description: `Timer color changed successfully.`,
+    });
+  };
+
   return (
     <div className="min-h-screen p-6 max-w-5xl mx-auto">
       <header className="text-center my-8 space-y-2">
@@ -151,6 +163,7 @@ const Index = () => {
                 onStop={() => handleStopTimer(timer.id)}
                 onDelete={() => handleDeleteTimer(timer.id)}
                 onRename={(name) => handleRenameTimer(timer.id, name)}
+                onColorChange={(color) => handleChangeTimerColor(timer.id, color)}
               />
             ))}
           </div>

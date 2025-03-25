@@ -10,6 +10,7 @@ export interface Timer {
   status: TimerStatus;
   createdAt: number; // timestamp
   lastUpdated?: number; // timestamp of last update, optional
+  color?: string; // timer color, optional
 }
 
 export const useTimer = (initialData?: Partial<Timer>) => {
@@ -19,6 +20,7 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     timeElapsed: initialData?.timeElapsed || 0,
     status: initialData?.status || 'stopped',
     createdAt: initialData?.createdAt || Date.now(),
+    color: initialData?.color || 'blue', // default color
   });
 
   const intervalRef = useRef<number | null>(null);
@@ -96,6 +98,13 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     }));
   };
 
+  const updateColor = (color: string) => {
+    setTimer(prev => ({
+      ...prev,
+      color,
+    }));
+  };
+
   return {
     timer,
     startTimer,
@@ -103,6 +112,7 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     stopTimer,
     resumeTimer,
     updateName,
+    updateColor,
   };
 };
 
