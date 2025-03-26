@@ -1,8 +1,10 @@
 
 import { useState } from "react";
-import { Play, Pause, Square, Trash2, Edit, Palette } from "lucide-react";
+import { Play, Pause, Square, Trash2, Edit, Palette, Link, ExternalLink } from "lucide-react";
 import { Timer as TimerType, formatTime } from "@/hooks/useTimer";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 interface TimerProps {
   timer: TimerType;
@@ -12,6 +14,8 @@ interface TimerProps {
   onDelete: () => void;
   onRename: (name: string) => void;
   onColorChange: (color: string) => void;
+  onJiraTaskUpdate: (taskId: string, taskUrl: string) => void;
+  onJiraTaskRemove: () => void;
 }
 
 const TIMER_COLORS = [
@@ -39,10 +43,16 @@ const Timer = ({
   onDelete,
   onRename,
   onColorChange,
+  onJiraTaskUpdate,
+  onJiraTaskRemove,
 }: TimerProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(timer.name);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showJiraLinkForm, setShowJiraLinkForm] = useState(false);
+  const [jiraTaskId, setJiraTaskId] = useState(timer.jiraTaskId || '');
+  const [jiraTaskUrl, setJiraTaskUrl] = useState(timer.jiraTaskUrl || '');
+  const { toast } = useToast();
   
   const { bgClass, hoverClass } = getColorClasses(timer.color);
 
@@ -60,6 +70,41 @@ const Timer = ({
       setNewName(timer.name);
       setIsEditing(false);
     }
+  };
+
+  const handleJiraTaskSubmit = () => {
+    if (jiraTaskId.trim()) {
+      onJiraTaskUpdate(jiraTaskId.trim(), jiraTaskUrl.trim());
+      setShowJiraLinkForm(false);
+      toast({
+        title: "Jira task linked",
+        description: `Timer linked to Jira task ${jiraTaskId}`,
+      });
+    } else {
+      toast({
+        title: "Error",
+        description: "Jira task ID is required",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleJiraLinkKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleJiraTaskSubmit();
+    } else if (e.key === "Escape") {
+      setJiraTaskId(timer.jiraTaskId || '');
+      setJiraTaskUrl(timer.jiraTaskUrl || '');
+      setShowJiraLinkForm(false);
+    }
+  };
+
+  const handleRemoveJiraLink = () => {
+    onJiraTaskRemove();
+    toast({
+      title: "Jira task unlinked",
+      description: "Timer is no longer linked to any Jira task",
+    });
   };
 
   // Get CSS variable name for the timer color
@@ -113,6 +158,13 @@ const Timer = ({
             >
               <Palette size={14} />
             </button>
+            <button
+              onClick={() => setShowJiraLinkForm(!showJiraLinkForm)}
+              className="p-1.5 text-muted-foreground hover:text-foreground rounded-full hover:bg-secondary/80 transition-colors"
+              aria-label="Link Jira task"
+            >
+              <Link size={14} />
+            </button>
           </div>
         )}
         <div className="flex items-center">
@@ -151,6 +203,80 @@ const Timer = ({
               ))}
             </ToggleGroup>
           </div>
+        </div>
+      )}
+
+      {showJiraLinkForm && (
+        <div className="mb-4 bg-white/10 p-3 rounded-xl animate-fade-in">
+          <div className="space-y-3">
+            <div>
+              <label htmlFor="jiraTaskId" className="block text-sm font-medium text-muted-foreground mb-1">
+                Jira Task ID
+              </label>
+              <Input
+                id="jiraTaskId"
+                value={jiraTaskId}
+                onChange={(e) => setJiraTaskId(e.target.value)}
+                placeholder="e.g., PROJ-123"
+                className="text-sm"
+                onKeyDown={handleJiraLinkKeyDown}
+              />
+            </div>
+            <div>
+              <label htmlFor="jiraTaskUrl" className="block text-sm font-medium text-muted-foreground mb-1">
+                Jira Task URL (optional)
+              </label>
+              <Input
+                id="jiraTaskUrl"
+                value={jiraTaskUrl}
+                onChange={(e) => setJiraTaskUrl(e.target.value)}
+                placeholder="e.g., https://your-jira.atlassian.net/browse/PROJ-123"
+                className="text-sm"
+                onKeyDown={handleJiraLinkKeyDown}
+              />
+            </div>
+            <div className="flex justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setShowJiraLinkForm(false)}
+                className="px-3 py-1 text-sm rounded-md bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleJiraTaskSubmit}
+                className={`px-3 py-1 text-sm rounded-md ${bgClass} ${hoverClass} text-white`}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {timer.jiraTaskId && !showJiraLinkForm && (
+        <div className="mb-4 flex items-center gap-2 text-sm bg-white/10 p-2 rounded-lg">
+          <span className="text-muted-foreground">Jira:</span>
+          <span className="font-medium">{timer.jiraTaskId}</span>
+          {timer.jiraTaskUrl && (
+            <a 
+              href={timer.jiraTaskUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-primary hover:text-primary/90"
+            >
+              <ExternalLink size={12} />
+              <span>Open</span>
+            </a>
+          )}
+          <button
+            onClick={handleRemoveJiraLink}
+            className="ml-auto text-muted-foreground hover:text-destructive"
+            aria-label="Remove Jira link"
+          >
+            <Trash2 size={14} />
+          </button>
         </div>
       )}
 

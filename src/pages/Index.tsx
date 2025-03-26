@@ -122,6 +122,26 @@ const Index = () => {
     });
   };
 
+  const handleJiraTaskUpdate = (id: string, taskId: string, taskUrl: string) => {
+    setTimers(prev =>
+      prev.map(timer => 
+        timer.id === id 
+          ? { ...timer, jiraTaskId: taskId, jiraTaskUrl: taskUrl } 
+          : timer
+      )
+    );
+  };
+
+  const handleJiraTaskRemove = (id: string) => {
+    setTimers(prev =>
+      prev.map(timer => 
+        timer.id === id 
+          ? { ...timer, jiraTaskId: '', jiraTaskUrl: '' } 
+          : timer
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen p-6 max-w-5xl mx-auto">
       <header className="text-center my-8 space-y-2">
@@ -168,6 +188,8 @@ const Index = () => {
                 onDelete={() => handleDeleteTimer(timer.id)}
                 onRename={(name) => handleRenameTimer(timer.id, name)}
                 onColorChange={(color) => handleChangeTimerColor(timer.id, color)}
+                onJiraTaskUpdate={(taskId, taskUrl) => handleJiraTaskUpdate(timer.id, taskId, taskUrl)}
+                onJiraTaskRemove={() => handleJiraTaskRemove(timer.id)}
               />
             ))}
           </div>

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 
 export type TimerStatus = 'stopped' | 'running' | 'paused';
@@ -11,6 +10,8 @@ export interface Timer {
   createdAt: number; // timestamp
   lastUpdated?: number; // timestamp of last update, optional
   color?: string; // timer color, optional
+  jiraTaskId?: string; // Jira task ID, optional
+  jiraTaskUrl?: string; // Jira task URL, optional
 }
 
 export const useTimer = (initialData?: Partial<Timer>) => {
@@ -21,12 +22,13 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     status: initialData?.status || 'stopped',
     createdAt: initialData?.createdAt || Date.now(),
     color: initialData?.color || 'blue', // default color
+    jiraTaskId: initialData?.jiraTaskId || '',
+    jiraTaskUrl: initialData?.jiraTaskUrl || '',
   });
 
   const intervalRef = useRef<number | null>(null);
   const lastTickRef = useRef<number | null>(null);
 
-  // Clear interval on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) {
@@ -36,13 +38,10 @@ export const useTimer = (initialData?: Partial<Timer>) => {
   }, []);
 
   const startTimer = () => {
-    // If already running, do nothing
     if (timer.status === 'running') return;
 
-    // Set the last tick to now
     lastTickRef.current = Date.now();
 
-    // Start the interval
     intervalRef.current = window.setInterval(() => {
       const now = Date.now();
       const elapsed = now - (lastTickRef.current || now);
@@ -54,7 +53,7 @@ export const useTimer = (initialData?: Partial<Timer>) => {
       }));
       
       lastTickRef.current = now;
-    }, 100); // Update every 100ms for smoother display
+    }, 100);
 
     setTimer(prev => ({
       ...prev,
@@ -105,6 +104,22 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     }));
   };
 
+  const updateJiraTask = (taskId: string, taskUrl: string) => {
+    setTimer(prev => ({
+      ...prev,
+      jiraTaskId: taskId,
+      jiraTaskUrl: taskUrl,
+    }));
+  };
+
+  const removeJiraTask = () => {
+    setTimer(prev => ({
+      ...prev,
+      jiraTaskId: '',
+      jiraTaskUrl: '',
+    }));
+  };
+
   return {
     timer,
     startTimer,
@@ -113,6 +128,8 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     resumeTimer,
     updateName,
     updateColor,
+    updateJiraTask,
+    removeJiraTask,
   };
 };
 
