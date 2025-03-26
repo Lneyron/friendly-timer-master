@@ -10,8 +10,9 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+// Create a separate App component to ensure all hooks are properly nested
+function AppContent() {
+  return (
     <ThemeProvider defaultTheme="system" storageKey="timer-theme">
       <BrowserRouter>
         <TooltipProvider>
@@ -25,7 +26,16 @@ const App = () => (
         </TooltipProvider>
       </BrowserRouter>
     </ThemeProvider>
-  </QueryClientProvider>
-);
+  );
+}
+
+// Main App component as a proper function component
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
+  );
+};
 
 export default App;
