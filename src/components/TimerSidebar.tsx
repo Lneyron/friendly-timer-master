@@ -119,97 +119,99 @@ const TimerSidebar = ({ timers, onArchiveTimer, onUnarchiveTimer }: TimerSidebar
   );
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="gap-2 fixed bottom-4 right-4 shadow-md z-10"
-        >
-          <Clock className="h-4 w-4" />
-          <span>Timers</span>
-          {activeTimers.length > 0 && (
-            <Badge className="ml-1">{activeTimers.length}</Badge>
-          )}
-        </Button>
-      </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
-        <SheetHeader className="pb-4">
-          <SheetTitle>Timer Dashboard</SheetTitle>
-        </SheetHeader>
-        
-        <Tabs defaultValue="active" className="mt-2">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="active" className="flex gap-2 items-center">
-              <Clock className="h-4 w-4" />
-              <span>Active</span>
-              {activeTimers.length > 0 && (
-                <Badge variant="secondary" className="ml-1">{activeTimers.length}</Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="archived" className="flex gap-2 items-center">
-              <Archive className="h-4 w-4" />
-              <span>Archived</span>
-              {archivedTimers.length > 0 && (
-                <Badge variant="secondary" className="ml-1">{archivedTimers.length}</Badge>
-              )}
-            </TabsTrigger>
-          </TabsList>
+    <>
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="gap-2 fixed bottom-4 right-4 shadow-md z-10"
+        onClick={() => setOpen(true)}
+      >
+        <Clock className="h-4 w-4" />
+        <span>Timers</span>
+        {activeTimers.length > 0 && (
+          <Badge className="ml-1">{activeTimers.length}</Badge>
+        )}
+      </Button>
+
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader className="pb-4">
+            <SheetTitle>Timer Dashboard</SheetTitle>
+          </SheetHeader>
           
-          <TabsContent value="active" className="mt-4">
-            {activeTimers.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
-                <Clock4 className="h-12 w-12 mb-2 opacity-20" />
-                <p>No active timers</p>
-                <p className="text-sm mt-1">
-                  All your active timers will appear here
-                </p>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="pl-0">Name</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right pr-0">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {activeTimers.map(timer => renderTimerRow(timer, false))}
-                </TableBody>
-              </Table>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="archived" className="mt-4">
-            {archivedTimers.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
-                <ListX className="h-12 w-12 mb-2 opacity-20" />
-                <p>No archived timers</p>
-                <p className="text-sm mt-1">
-                  Archived timers will appear here
-                </p>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="pl-0">Name</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right pr-0">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {archivedTimers.map(timer => renderTimerRow(timer, true))}
-                </TableBody>
-              </Table>
-            )}
-          </TabsContent>
-        </Tabs>
-      </SheetContent>
-    </Sheet>
+          <Tabs defaultValue="active" className="mt-2">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="active" className="flex gap-2 items-center">
+                <Clock className="h-4 w-4" />
+                <span>Active</span>
+                {activeTimers.length > 0 && (
+                  <Badge variant="secondary" className="ml-1">{activeTimers.length}</Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="archived" className="flex gap-2 items-center">
+                <Archive className="h-4 w-4" />
+                <span>Archived</span>
+                {archivedTimers.length > 0 && (
+                  <Badge variant="secondary" className="ml-1">{archivedTimers.length}</Badge>
+                )}
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="active" className="mt-4">
+              {activeTimers.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                  <Clock4 className="h-12 w-12 mb-2 opacity-20" />
+                  <p>No active timers</p>
+                  <p className="text-sm mt-1">
+                    All your active timers will appear here
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="pl-0">Name</TableHead>
+                      <TableHead>Time</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right pr-0">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {activeTimers.map(timer => renderTimerRow(timer, false))}
+                  </TableBody>
+                </Table>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="archived" className="mt-4">
+              {archivedTimers.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
+                  <ListX className="h-12 w-12 mb-2 opacity-20" />
+                  <p>No archived timers</p>
+                  <p className="text-sm mt-1">
+                    Archived timers will appear here
+                  </p>
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="pl-0">Name</TableHead>
+                      <TableHead>Time</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right pr-0">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {archivedTimers.map(timer => renderTimerRow(timer, true))}
+                  </TableBody>
+                </Table>
+              )}
+            </TabsContent>
+          </Tabs>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 };
 
