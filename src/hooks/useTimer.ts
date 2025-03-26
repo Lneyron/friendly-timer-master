@@ -12,6 +12,7 @@ export interface Timer {
   color?: string; // timer color, optional
   jiraTaskId?: string; // Jira task ID, optional
   jiraTaskUrl?: string; // Jira task URL, optional
+  archived?: boolean; // Whether the timer is archived
 }
 
 export const useTimer = (initialData?: Partial<Timer>) => {
@@ -24,6 +25,7 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     color: initialData?.color || 'blue', // default color
     jiraTaskId: initialData?.jiraTaskId || '',
     jiraTaskUrl: initialData?.jiraTaskUrl || '',
+    archived: initialData?.archived || false,
   });
 
   const intervalRef = useRef<number | null>(null);
@@ -120,6 +122,13 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     }));
   };
 
+  const toggleArchived = () => {
+    setTimer(prev => ({
+      ...prev,
+      archived: !prev.archived,
+    }));
+  };
+
   return {
     timer,
     startTimer,
@@ -130,6 +139,7 @@ export const useTimer = (initialData?: Partial<Timer>) => {
     updateColor,
     updateJiraTask,
     removeJiraTask,
+    toggleArchived,
   };
 };
 

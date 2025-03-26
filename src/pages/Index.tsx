@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Timer as TimerType } from "@/hooks/useTimer";
 import { loadTimers, saveTimers } from "@/lib/storage";
@@ -7,6 +8,7 @@ import CreateTimerForm from "@/components/CreateTimerForm";
 import EmptyState from "@/components/EmptyState";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
+import TimerSidebar from "@/components/TimerSidebar";
 
 const Index = () => {
   const [timers, setTimers] = useState<TimerType[]>([]);
@@ -56,6 +58,7 @@ const Index = () => {
       createdAt: Date.now(),
       lastUpdated: Date.now(),
       color: color || 'blue',
+      archived: false,
     };
     
     setTimers(prev => [newTimer, ...prev]);
@@ -142,6 +145,25 @@ const Index = () => {
     );
   };
 
+  const handleArchiveTimer = (id: string) => {
+    setTimers(prev =>
+      prev.map(timer => 
+        timer.id === id ? { ...timer, archived: true } : timer
+      )
+    );
+  };
+
+  const handleUnarchiveTimer = (id: string) => {
+    setTimers(prev =>
+      prev.map(timer => 
+        timer.id === id ? { ...timer, archived: false } : timer
+      )
+    );
+  };
+
+  // Filter out archived timers from the main display
+  const activeTimers = timers.filter(timer => !timer.archived);
+
   return (
     <div className="min-h-screen p-6 max-w-5xl mx-auto">
       <header className="text-center my-8 space-y-2">
@@ -174,11 +196,11 @@ const Index = () => {
           />
         )}
 
-        {timers.length === 0 && !isCreating ? (
+        {activeTimers.length === 0 && !isCreating ? (
           <EmptyState onCreateTimer={() => setIsCreating(true)} />
         ) : (
           <div className="grid grid-cols-1 gap-6 animate-fade-in">
-            {timers.map((timer) => (
+            {activeTimers.map((timer) => (
               <Timer
                 key={timer.id}
                 timer={timer}
@@ -195,6 +217,12 @@ const Index = () => {
           </div>
         )}
       </div>
+
+      <TimerSidebar 
+        timers={timers} 
+        onArchiveTimer={handleArchiveTimer}
+        onUnarchiveTimer={handleUnarchiveTimer}
+      />
     </div>
   );
 };
