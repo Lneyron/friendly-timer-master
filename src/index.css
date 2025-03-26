@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -72,6 +71,14 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+    
+    /* Dark mode timer colors - keeping them bright for visibility */
+    --blue: 221 83% 60%;
+    --green: 142 76% 55%;
+    --purple: 269 83% 70%;
+    --pink: 330 84% 65%;
+    --amber: 38 95% 60%;
+    --teal: 172 70% 55%;
   }
 }
 
@@ -106,6 +113,14 @@
   
   .text-balance {
     text-wrap: balance;
+  }
+  
+  .dark .glass {
+    @apply backdrop-blur-xl bg-black/30 border border-white/10 shadow-lg;
+  }
+  
+  .dark .glass-light {
+    @apply backdrop-blur-sm bg-black/20 border border-white/10;
   }
 }
 

@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import Timer from "@/components/Timer";
 import CreateTimerForm from "@/components/CreateTimerForm";
 import EmptyState from "@/components/EmptyState";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -124,6 +125,9 @@ const Index = () => {
   return (
     <div className="min-h-screen p-6 max-w-5xl mx-auto">
       <header className="text-center my-8 space-y-2">
+        <div className="flex justify-end mb-4">
+          <ThemeToggle />
+        </div>
         <h1 className="text-3xl font-medium tracking-tight">Friendly Timer</h1>
         <p className="text-muted-foreground max-w-lg mx-auto text-balance">
           Create and manage multiple timers. Perfect for tracking different activities simultaneously.
